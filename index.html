@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portfolio — The Gallery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Inter:wght@300;400&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── Reset & Base ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold:       #c9a84c;
+      --gold-light: #e8d08a;
+      --dark:       #0a0806;
+      --wall:       #1a1410;
+      --wall-light: #241c14;
+      --floor:      #111009;
+      --text:       #e8dcc8;
+      --muted:      #7a6e5e;
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow: hidden;
+      background: var(--dark);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      cursor: crosshair;
+      user-select: none;
+    }
+
+    /* ─── Noise overlay ─────────────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 100;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      opacity: .5;
+    }
+
+    /* ─── Vignette ──────────────────────────────────────────────── */
+    #vignette {
+      position: fixed; inset: 0; z-index: 90;
+      background: radial-gradient(ellipse 80% 80% at 50% 50%,
+        transparent 40%, rgba(0,0,0,.7) 100%);
+      pointer-events: none;
+    }
+
+    /* ─── Canvas (dust particles) ───────────────────────────────── */
+    #dust {
+      position: fixed; inset: 0; z-index: 80;
+      pointer-events: none;
+      opacity: .6;
+    }
+
+    /* ─── Scene / Stage ─────────────────────────────────────────── */
+    #stage {
+      position: fixed; inset: 0;
+      perspective: 900px;
+      perspective-origin: 50% 48%;
+      overflow: hidden;
+    }
+
+    #hall {
+      position: absolute;
+      width: 100%; height: 100%;
+      transform-style: preserve-3d;
+      transform: translateZ(0px);
+      transition: transform .05s linear;
+      will-change: transform;
+    }
+
+    /* ─── Hall panels ───────────────────────────────────────────── */
+    .panel {
+      position: absolute;
+      transform-style: preserve-3d;
+      backface-visibility: hidden;
+    }
+
+    /* Floor */
+    #floor {
+      width: 900px; height: 7000px;
+      left: 50%; top: 50%;
+      transform-origin: top center;
+      transform: translateX(-50%) rotateX(-90deg);
+      background:
+        repeating-linear-gradient(
+          90deg,
+          transparent,
+          transparent 149px,
+          rgba(180,140,60,.06) 150px
+        ),
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 149px,
+          rgba(180,140,60,.06) 150px
+        ),
+        linear-gradient(to bottom,
+          #1c1610 0%,
+          #0e0c08 40%,
+          #080705 100%
+        );
+    }
+
+    /* Floor reflection shimmer */
+    #floor::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(to bottom,
+        rgba(201,168,76,.07) 0%,
+        transparent 30%
+      );
+    }
+
+    /* Ceiling */
+    #ceiling {
+      width: 900px; height: 7000px;
+      left: 50%; top: 50%;
+      transform-origin: bottom center;
+      transform: translateX(-50%) rotateX(90deg);
+      background: linear-gradient(to bottom, #050403 0%, #0d0b08 100%);
+    }
+
+    /* Left wall */
+    #wall-left {
+      width: 7000px; height: 600px;
+      left: 50%; top: 50%;
+      transform-origin: right center;
+      transform: translateY(-50%) rotateY(90deg);
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          transparent,
+          transparent 119px,
+          rgba(201,168,76,.04) 120px
+        ),
+        linear-gradient(to right, #0d0b08, #1a1410 20%, #1a1410 80%, #0d0b08);
+    }
+
+    /* Right wall */
+    #wall-right {
+      width: 7000px; height: 600px;
+      right: 50%; top: 50%;
+      transform-origin: left center;
+      transform: translateY(-50%) rotateY(-90deg);
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          transparent,
+          transparent 119px,
+          rgba(201,168,76,.04) 120px
+        ),
+        linear-gradient(to left, #0d0b08, #1a1410 20%, #1a1410 80%, #0d0b08);
+    }
+
+    /* Back wall (end of hall) */
+    #wall-back {
+      width: 900px; height: 600px;
+      left: 50%; top: 50%;
+      transform: translate(-50%, -50%) translateZ(-6800px);
+      background: radial-gradient(ellipse 60% 60% at 50% 50%,
+        #2a2010 0%, #0d0b08 70%, #040302 100%);
+    }
+
+    /* Ceiling light strips */
+    #lights {
+      position: absolute;
+      width: 80px; height: 7000px;
+      left: 50%; top: 50%;
+      transform-origin: top center;
+      transform: translateX(-50%) translateY(-0px) rotateX(-90deg);
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 480px,
+        rgba(255,235,180,.18) 500px,
+        rgba(255,235,180,.18) 530px,
+        transparent 550px
+      );
+      filter: blur(6px);
+    }
+
+    /* ─── Frames ─────────────────────────────────────────────────── */
+    .frame-wrap {
+      position: absolute;
+      transform-style: preserve-3d;
+      cursor: pointer;
+    }
+
+    .frame {
+      position: relative;
+      transform-style: preserve-3d;
+      transition: filter .3s ease, transform .3s ease;
+    }
+
+    .frame-wrap:hover .frame {
+      filter: brightness(1.2);
+    }
+
+    /* Outer gilt border */
+    .frame-outer {
+      position: absolute;
+      inset: -18px;
+      background:
+        linear-gradient(135deg, var(--gold-light), var(--gold) 30%, #7a5c1e 60%, var(--gold) 80%, var(--gold-light));
+      border-radius: 2px;
+      box-shadow:
+        0 0 0 1px rgba(201,168,76,.3),
+        inset 0 0 0 4px rgba(0,0,0,.5),
+        0 0 40px rgba(201,168,76,.12),
+        0 0 80px rgba(201,168,76,.05);
+    }
+
+    /* Inner inset bevel */
+    .frame-outer::after {
+      content: '';
+      position: absolute;
+      inset: 6px;
+      border: 1px solid rgba(201,168,76,.4);
+      border-radius: 1px;
+    }
+
+    /* Artwork area */
+    .frame-art {
+      position: relative; z-index: 1;
+      width: 240px; height: 320px;
+      overflow: hidden;
+      background: #0d0b08;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 12px;
+    }
+
+    .frame-art img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      opacity: .85;
+    }
+
+    /* Placeholder art (when no image supplied) */
+    .frame-placeholder {
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 14px;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .frame-placeholder .num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 52px;
+      font-weight: 300;
+      color: var(--gold);
+      opacity: .4;
+      line-height: 1;
+    }
+
+    .frame-placeholder .proj-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 17px;
+      font-weight: 400;
+      color: var(--text);
+      letter-spacing: .08em;
+    }
+
+    .frame-placeholder .proj-tag {
+      font-size: 10px;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* Spotlight cone above frame */
+    .spotlight {
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 70px solid transparent;
+      border-right: 70px solid transparent;
+      border-top: 0;
+      border-bottom: 220px solid rgba(255,235,160,.03);
+      filter: blur(12px);
+      pointer-events: none;
+    }
+
+    /* ─── Nameplate / Hero ──────────────────────────────────────── */
+    #hero {
+      position: fixed; inset: 0;
+      z-index: 50;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 10px;
+      pointer-events: none;
+      transition: opacity .8s ease, transform 1s ease;
+    }
+
+    #hero.hidden {
+      opacity: 0;
+      transform: translateZ(60px) scale(1.05);
+      pointer-events: none;
+    }
+
+    #hero h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: clamp(36px, 6vw, 72px);
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--text);
+      text-shadow: 0 0 60px rgba(201,168,76,.3);
+      pointer-events: all;
+    }
+
+    #hero .subtitle {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: clamp(14px, 2vw, 20px);
+      letter-spacing: .25em;
+      color: var(--gold);
+      opacity: .8;
+    }
+
+    #hero .enter-hint {
+      margin-top: 28px;
+      font-size: 11px;
+      letter-spacing: .35em;
+      text-transform: uppercase;
+      color: var(--muted);
+      animation: pulse 3s ease-in-out infinite;
+      pointer-events: all;
+      cursor: pointer;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: .4; }
+      50%       { opacity: 1; }
+    }
+
+    /* ─── HUD (nav hints) ────────────────────────────────────────── */
+    #hud {
+      position: fixed;
+      bottom: 32px; left: 50%;
+      transform: translateX(-50%);
+      z-index: 60;
+      display: flex; align-items: center; gap: 28px;
+      font-size: 10px; letter-spacing: .25em; text-transform: uppercase;
+      color: var(--muted);
+      opacity: 0;
+      transition: opacity .6s ease;
+      pointer-events: none;
+    }
+
+    #hud.visible { opacity: 1; }
+
+    #hud span { display: flex; align-items: center; gap: 8px; }
+
+    #progress-bar {
+      position: fixed; bottom: 0; left: 0;
+      height: 1px; width: 0%;
+      background: linear-gradient(to right, transparent, var(--gold), transparent);
+      z-index: 61;
+      transition: width .3s ease;
+    }
+
+    /* ─── Detail Modal ──────────────────────────────────────────── */
+    #modal {
+      position: fixed; inset: 0; z-index: 200;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,.85);
+      backdrop-filter: blur(12px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .4s ease;
+    }
+
+    #modal.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal-inner {
+      position: relative;
+      max-width: 680px; width: 90%;
+      background: #13100d;
+      border: 1px solid rgba(201,168,76,.25);
+      padding: 48px 52px;
+      transform: translateY(20px);
+      transition: transform .4s ease;
+      box-shadow: 0 40px 120px rgba(0,0,0,.8);
+    }
+
+    #modal.open .modal-inner { transform: translateY(0); }
+
+    .modal-inner .modal-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 80px; font-weight: 300;
+      color: var(--gold); opacity: .15;
+      line-height: 1;
+      position: absolute; top: 24px; right: 36px;
+    }
+
+    .modal-inner h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px; font-weight: 400;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .modal-inner .modal-tag {
+      font-size: 10px; letter-spacing: .3em;
+      text-transform: uppercase; color: var(--gold);
+      margin-bottom: 24px; display: block;
+    }
+
+    .modal-inner p {
+      font-size: 14px; line-height: 1.8;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+
+    .modal-links {
+      display: flex; gap: 16px; flex-wrap: wrap;
+    }
+
+    .modal-link {
+      font-size: 11px; letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--text);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(201,168,76,.4);
+      padding-bottom: 2px;
+      transition: color .2s, border-color .2s;
+    }
+
+    .modal-link:hover {
+      color: var(--gold); border-color: var(--gold);
+    }
+
+    .modal-close {
+      position: absolute; top: 20px; left: 24px;
+      background: none; border: none; cursor: pointer;
+      font-size: 11px; letter-spacing: .25em;
+      text-transform: uppercase; color: var(--muted);
+      transition: color .2s;
+    }
+
+    .modal-close:hover { color: var(--text); }
+
+    /* ─── Scroll indicator arrows (desktop hint) ────────────────── */
+    .arrow-hint {
+      position: fixed;
+      top: 50%; z-index: 60;
+      transform: translateY(-50%);
+      font-size: 20px;
+      color: var(--muted);
+      opacity: 0;
+      transition: opacity .4s;
+      pointer-events: none;
+    }
+    #arrow-l { left: 28px; }
+    #arrow-r { right: 28px; }
+    .arrow-hint.visible { opacity: .4; }
+  </style>
+</head>
+<body>
+
+<!-- Atmospheric layers -->
+<div id="vignette"></div>
+<canvas id="dust"></canvas>
+
+<!-- 3D Hall -->
+<div id="stage">
+  <div id="hall">
+
+    <!-- Structural panels -->
+    <div class="panel" id="floor"></div>
+    <div class="panel" id="ceiling"></div>
+    <div class="panel" id="wall-left"></div>
+    <div class="panel" id="wall-right"></div>
+    <div class="panel" id="wall-back"></div>
+    <div id="lights"></div>
+
+    <!-- Frames injected by JS -->
+
+  </div>
+</div>
+
+<!-- Hero splash -->
+<div id="hero">
+  <h1>Your Name</h1>
+  <div class="subtitle">Designer &amp; Developer</div>
+  <div class="enter-hint" id="enter-btn">Enter Gallery ↓</div>
+</div>
+
+<!-- HUD -->
+<div id="hud">
+  <span>Scroll to explore</span>
+  <span style="color:rgba(201,168,76,.4)">·</span>
+  <span>Click to view</span>
+</div>
+<div id="progress-bar"></div>
+
+<div class="arrow-hint" id="arrow-l">←</div>
+<div class="arrow-hint" id="arrow-r">→</div>
+
+<!-- Detail modal -->
+<div id="modal">
+  <div class="modal-inner">
+    <button class="modal-close" id="modal-close">✕ Close</button>
+    <div class="modal-num" id="m-num">01</div>
+    <h2 id="m-title">Project Title</h2>
+    <span class="modal-tag" id="m-tag">Category</span>
+    <p id="m-desc">Project description.</p>
+    <div class="modal-links" id="m-links"></div>
+  </div>
+</div>
+
+<script>
+/* ─── Project data — edit this! ──────────────────────────────────── */
+const PROJECTS = [
+  {
+    title: "Project Alpha",
+    tag: "Web Design",
+    desc: "A full-stack web application built with React and Node.js, featuring real-time data visualization and a responsive, accessible interface.",
+    links: [{ label: "Live Site", url: "#" }, { label: "GitHub", url: "#" }],
+    image: null   // swap null with an image path e.g. "img/project1.jpg"
+  },
+  {
+    title: "Noctis App",
+    tag: "UX / Mobile",
+    desc: "A mobile-first productivity application designed around calm, focused interaction. Prototyped in Figma, shipped in React Native.",
+    links: [{ label: "Case Study", url: "#" }, { label: "Prototype", url: "#" }],
+    image: null
+  },
+  {
+    title: "Motion Study",
+    tag: "Creative Coding",
+    desc: "Generative art experiments exploring noise fields, particle systems, and real-time WebGL rendering.",
+    links: [{ label: "Explore", url: "#" }, { label: "Source", url: "#" }],
+    image: null
+  },
+  {
+    title: "Brand Identity",
+    tag: "Branding",
+    desc: "End-to-end brand identity for a fictional artisan studio — wordmark, type system, colour palette, and guidelines.",
+    links: [{ label: "Behance", url: "#" }],
+    image: null
+  },
+  {
+    title: "Data Canvas",
+    tag: "Data Visualisation",
+    desc: "An interactive dashboard translating complex climate datasets into elegant, explorable visual narratives.",
+    links: [{ label: "Live Demo", url: "#" }, { label: "GitHub", url: "#" }],
+    image: null
+  },
+  {
+    title: "Type Specimen",
+    tag: "Typography",
+    desc: "A typographic specimen microsite celebrating Garamond — its history, letterforms, and contemporary use.",
+    links: [{ label: "Visit", url: "#" }],
+    image: null
+  },
+];
+
+/* ─── Frame placement along Z axis ──────────────────────────────── */
+/* Each frame is placed on alternating walls at increasing depth     */
+const SEGMENT_DEPTH = 1100;   // px gap between frames
+const FRAME_W = 240;
+const FRAME_H = 320;
+const WALL_OFFSET = 390;      // how far from centre a frame sits on its wall
+
+const hall = document.getElementById('hall');
+
+PROJECTS.forEach((proj, i) => {
+  const isLeft = i % 2 === 0;
+  const z = -(SEGMENT_DEPTH * 0.6 + i * SEGMENT_DEPTH);
+
+  const wrap = document.createElement('div');
+  wrap.className = 'frame-wrap';
+  wrap.style.transformStyle = 'preserve-3d';
+  wrap.style.position = 'absolute';
+  wrap.style.left  = '50%';
+  wrap.style.top   = '50%';
+
+  if (isLeft) {
+    wrap.style.transform =
+      `translateX(-50%) translateY(-50%) translateZ(${z}px) ` +
+      `translateX(-${WALL_OFFSET}px) rotateY(90deg)`;
+  } else {
+    wrap.style.transform =
+      `translateX(-50%) translateY(-50%) translateZ(${z}px) ` +
+      `translateX(${WALL_OFFSET}px) rotateY(-90deg)`;
+  }
+
+  wrap.innerHTML = `
+    <div class="spotlight"></div>
+    <div class="frame">
+      <div class="frame-outer"></div>
+      <div class="frame-art">
+        ${proj.image
+          ? `<img src="${proj.image}" alt="${proj.title}">`
+          : `<div class="frame-placeholder">
+               <div class="num">${String(i+1).padStart(2,'0')}</div>
+               <div class="proj-title">${proj.title}</div>
+               <div class="proj-tag">${proj.tag}</div>
+             </div>`
+        }
+      </div>
+    </div>`;
+
+  wrap.addEventListener('click', () => openModal(i));
+  hall.appendChild(wrap);
+});
+
+/* ─── Camera / scroll state ──────────────────────────────────────── */
+const MAX_Z    = SEGMENT_DEPTH * (PROJECTS.length - 0.5);
+const MIN_Z    = 0;
+let   camZ     = 0;       // current camera Z offset
+let   targetZ  = 0;       // scroll target
+let   entered  = false;
+let   mouseX   = 0;
+let   mouseY   = 0;
+let   tiltX    = 0;
+let   tiltY    = 0;
+let   raf;
+
+function setCamera() {
+  const tX = tiltX * 12;
+  const tY = tiltY * 6;
+  hall.style.transform =
+    `translateZ(${camZ}px) rotateY(${tX}deg) rotateX(${tY}deg)`;
+  document.getElementById('progress-bar').style.width =
+    (camZ / MAX_Z * 100).toFixed(1) + '%';
+}
+
+function tick() {
+  camZ  += (targetZ - camZ) * 0.075;
+  tiltX += (mouseX - tiltX) * 0.04;
+  tiltY += (mouseY - tiltY) * 0.04;
+  setCamera();
+  raf = requestAnimationFrame(tick);
+}
+tick();
+
+/* Scroll */
+window.addEventListener('wheel', e => {
+  if (!entered) return;
+  targetZ = Math.max(MIN_Z, Math.min(MAX_Z, targetZ + e.deltaY * 1.8));
+}, { passive: true });
+
+/* Touch */
+let lastTouchY = 0;
+window.addEventListener('touchstart', e => { lastTouchY = e.touches[0].clientY; });
+window.addEventListener('touchmove', e => {
+  if (!entered) return;
+  const dy = lastTouchY - e.touches[0].clientY;
+  targetZ = Math.max(MIN_Z, Math.min(MAX_Z, targetZ + dy * 3));
+  lastTouchY = e.touches[0].clientY;
+}, { passive: true });
+
+/* Mouse parallax */
+window.addEventListener('mousemove', e => {
+  mouseX = (e.clientX / window.innerWidth  - 0.5) *  1;
+  mouseY = (e.clientY / window.innerHeight - 0.5) * -0.6;
+});
+
+/* Keyboard */
+window.addEventListener('keydown', e => {
+  if (!entered) { if (e.key === 'Enter') enterGallery(); return; }
+  const step = 500;
+  if (e.key === 'ArrowDown' || e.key === 'ArrowRight')
+    targetZ = Math.min(MAX_Z, targetZ + step);
+  if (e.key === 'ArrowUp'   || e.key === 'ArrowLeft')
+    targetZ = Math.max(MIN_Z, targetZ - step);
+});
+
+/* ─── Enter gallery ──────────────────────────────────────────────── */
+function enterGallery() {
+  if (entered) return;
+  entered = true;
+  document.getElementById('hero').classList.add('hidden');
+  setTimeout(() => {
+    document.getElementById('hud').classList.add('visible');
+    document.getElementById('arrow-l').classList.add('visible');
+    document.getElementById('arrow-r').classList.add('visible');
+  }, 800);
+}
+
+document.getElementById('enter-btn').addEventListener('click', enterGallery);
+
+/* ─── Modal ──────────────────────────────────────────────────────── */
+const modal = document.getElementById('modal');
+
+function openModal(i) {
+  const p = PROJECTS[i];
+  document.getElementById('m-num').textContent   = String(i+1).padStart(2,'0');
+  document.getElementById('m-title').textContent = p.title;
+  document.getElementById('m-tag').textContent   = p.tag;
+  document.getElementById('m-desc').textContent  = p.desc;
+  const lc = document.getElementById('m-links');
+  lc.innerHTML = p.links
+    .map(l => `<a class="modal-link" href="${l.url}" target="_blank">${l.label}</a>`)
+    .join('');
+  modal.classList.add('open');
+}
+
+function closeModal() { modal.classList.remove('open'); }
+document.getElementById('modal-close').addEventListener('click', closeModal);
+modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+
+/* ─── Dust particles ─────────────────────────────────────────────── */
+const canvas = document.getElementById('dust');
+const ctx    = canvas.getContext('2d');
+let W, H, particles = [];
+
+function resizeCanvas() {
+  W = canvas.width  = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+class Particle {
+  constructor() { this.reset(true); }
+  reset(init = false) {
+    this.x = Math.random() * W;
+    this.y = init ? Math.random() * H : H + 5;
+    this.size  = Math.random() * 1.4 + .3;
+    this.speed = Math.random() * .25 + .05;
+    this.alpha = Math.random() * .4 + .05;
+    this.drift = (Math.random() - .5) * .15;
+  }
+  update() {
+    this.y -= this.speed;
+    this.x += this.drift;
+    if (this.y < -5) this.reset();
+  }
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(210,185,130,${this.alpha})`;
+    ctx.fill();
+  }
+}
+
+for (let i = 0; i < 80; i++) particles.push(new Particle());
+
+function animateDust() {
+  ctx.clearRect(0, 0, W, H);
+  particles.forEach(p => { p.update(); p.draw(); });
+  requestAnimationFrame(animateDust);
+}
+animateDust();
+</script>
+</body>
+</html>
