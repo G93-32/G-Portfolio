@@ -111,7 +111,9 @@ const onScroll = () => {
 };
 
 window.addEventListener('scroll', onScroll, { passive: true });
-window.addEventListener('resize', onScroll, { passive: true });
+// Resize runs update directly: it's infrequent, and going through the
+// rAF throttle would strand the reveals if frames aren't being served.
+window.addEventListener('resize', update, { passive: true });
 window.addEventListener('load', update);
 // Web fonts change line heights, so re-measure once they land.
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(update);
