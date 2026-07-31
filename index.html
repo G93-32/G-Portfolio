@@ -1,44 +1,320 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gurjot Singh | Portfolio</title>
-
-   <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js"></script>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Gurjot Singh | Developer</title>
+<meta name="description" content="Gurjot Singh — developer. Front-end engineering and machine learning, built from scratch." />
+<!-- Reveal animations only apply when JS is running, so the page is never blank without it. -->
+<script>document.documentElement.classList.add('js');</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23e4032e'/><text x='50' y='78' font-size='72' font-family='Arial Black,sans-serif' font-weight='900' fill='%23fff' text-anchor='middle'>G</text></svg>" />
 </head>
 <body>
-   <!-- HERO -->
-  <section class="hero">
-    <div class="mountain-layer layer-1"></div>
-    <div class="mountain-layer layer-2"></div>
-    <h1 class="hero-title">Your Name</h1>
-  </section>
 
-  <!-- ABOUT -->
-  <section class="section about">
-    <div class="about-img"></div>
-    <div class="about-text">
-      <h2>About Me</h2>
-      <p>I build immersive web experiences.</p>
+<div class="progress" id="progress"></div>
+
+<!-- ══ HEADER ══ -->
+<header class="header" id="header">
+  <a href="#top" class="mark">
+    <span class="mark-badge">93</span>
+    <span class="mark-name">GURJOT SINGH</span>
+  </a>
+  <button class="chapters-btn" id="chaptersBtn" aria-label="Open chapters">
+    <span class="roll">
+      <span class="roll-in">
+        <span>CHAPTERS</span>
+        <span>CHAPTERS</span>
+      </span>
+    </span>
+    <span class="chapters-icon"><i></i><i></i></span>
+  </button>
+</header>
+
+<!-- ══ MENU OVERLAY ══ -->
+<div class="menu" id="menu">
+  <nav class="menu-nav">
+    <a href="#developer"><span class="idx">01</span><span class="roll"><span class="roll-in"><span>The Developer</span><span>The Developer</span></span></span></a>
+    <a href="#beginnings"><span class="idx">02</span><span class="roll"><span class="roll-in"><span>Beginnings</span><span>Beginnings</span></span></span></a>
+    <a href="#work"><span class="idx">03</span><span class="roll"><span class="roll-in"><span>The Work</span><span>The Work</span></span></span></a>
+    <a href="#timeline"><span class="idx">04</span><span class="roll"><span class="roll-in"><span>Timeline</span><span>Timeline</span></span></span></a>
+    <a href="#craft"><span class="idx">05</span><span class="roll"><span class="roll-in"><span>The Craft</span><span>The Craft</span></span></span></a>
+    <a href="#contact"><span class="idx">06</span><span class="roll"><span class="roll-in"><span>Contact</span><span>Contact</span></span></span></a>
+  </nav>
+  <div class="menu-foot">
+    <a href="https://github.com/G93-32" target="_blank" rel="noopener">GITHUB</a>
+    <a href="mailto:gurjotsembi@gmail.com">EMAIL</a>
+  </div>
+</div>
+
+<main id="top">
+
+<!-- ══ HERO ══ -->
+<section class="hero">
+  <div class="hero-grid">
+    <p class="eyebrow rv">Portfolio — Ed. 2026</p>
+    <h1 class="display hero-title">
+      <span class="line"><span>BEYOND</span></span>
+      <span class="line"><span>THE CODE</span></span>
+    </h1>
+    <p class="hero-sub rv">Front-end engineering &amp; machine learning — built from scratch, not scaffolded.</p>
+  </div>
+
+  <div class="marquee hero-marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span>GS93 — GURJOT SINGH — GS93 — GURJOT SINGH —&nbsp;</span>
+      <span>GS93 — GURJOT SINGH — GS93 — GURJOT SINGH —&nbsp;</span>
     </div>
-  </section>
+  </div>
 
-  <!-- PROJECTS -->
-  <section class="section projects">
-    <h2>Selected Work</h2>
-    <div class="project-card">Project 01</div>
-    <div class="project-card">Project 02</div>
-  </section>
+  <div class="scroll-cue">
+    <span>SCROLL TO EXPLORE</span>
+    <i></i>
+  </div>
+</section>
 
-  <!-- CONTACT -->
-  <section class="section contact">
-    <h2>Let's Connect</h2>
-  </section>
+<!-- ══ 01 — THE DEVELOPER ══ -->
+<section class="chapter" id="developer">
+  <div class="wrap">
+    <div class="ch-head rv">
+      <span class="ch-num">01</span>
+      <h2 class="display ch-title">THE DEVELOPER</h2>
+    </div>
+    <div class="two-col">
+      <div class="lede rv">
+        <p><span class="drop">C</span>uriosity. Patience. Stubbornness. A refusal to treat any tool as a black box. These are the things that turn someone who <em>uses</em> software into someone who <em>builds</em> it.</p>
+      </div>
+      <div class="body-col rv">
+        <p>I'm Gurjot Singh — a developer who learns by building the thing rather than reading about it. My work runs from hand-written, SEO-optimised websites to machine-learning algorithms implemented from the mathematics up.</p>
+        <p>No frameworks where the platform will do. No copied snippets I couldn't rewrite from memory. The goal is always the same: understand it well enough to build it twice.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-  <script src="script.js"></script>
+<!-- ══ GENERAL INFOS ══ -->
+<section class="infos">
+  <div class="wrap">
+    <p class="label rv">GENERAL INFOS</p>
+    <div class="info-grid">
+      <div class="info rv"><span class="info-k">HANDLE</span><span class="info-v">G93-32</span></div>
+      <div class="info rv"><span class="info-k">FOCUS</span><span class="info-v">FRONT-END &amp; ML</span></div>
+      <div class="info rv"><span class="info-k">TOOLKIT</span><span class="info-v">HTML · CSS · JS · PYTHON</span></div>
+      <div class="info rv"><span class="info-k">STATUS</span><span class="info-v accent-txt">OPEN TO WORK</span></div>
+    </div>
 
+    <p class="label label-gap rv">STATS</p>
+    <div class="stats">
+      <div class="stat rv"><span class="display stat-n" data-count="3">03</span><span class="stat-l">PROJECTS SHIPPED</span></div>
+      <div class="stat rv"><span class="display stat-n" data-count="5">05</span><span class="stat-l">ML ALGORITHMS</span></div>
+      <div class="stat rv"><span class="display stat-n" data-count="4">04</span><span class="stat-l">LANGUAGES</span></div>
+      <div class="stat rv"><span class="display stat-n" data-count="0">00</span><span class="stat-l">DEPENDENCIES</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ PINNED QUOTE 1 ══ -->
+<div class="pin-wrap">
+  <div class="pin">
+    <blockquote class="display pin-quote">
+      <span class="line"><span>IT'S THE PROBLEM</span></span>
+      <span class="line"><span>THAT MAKES THE</span></span>
+      <span class="line"><span>PROGRAMMER</span></span>
+    </blockquote>
+  </div>
+</div>
+
+<!-- ══ 02 — BEGINNINGS ══ -->
+<section class="chapter" id="beginnings">
+  <div class="wrap">
+    <div class="ch-head rv">
+      <span class="ch-num">02</span>
+      <h2 class="display ch-title">BEGINNINGS</h2>
+    </div>
+    <div class="two-col">
+      <div class="body-col rv">
+        <p>It started the way it starts for most people who stick with it — a blank file, a compiler error, and the specific irritation of not understanding why.</p>
+        <p>First C, then Python. Loops before libraries, pointers before packages. That order matters: it's the reason a framework feels like a convenience rather than a mystery.</p>
+      </div>
+      <div class="code-panel rv">
+        <div class="code-bar"><i></i><i></i><i></i><span>hello.c</span></div>
+<pre class="code"><span class="c-cm">/* where it started */</span>
+<span class="c-kw">#include</span> <span class="c-st">&lt;stdio.h&gt;</span>
+
+<span class="c-kw">int</span> <span class="c-fn">main</span>(<span class="c-kw">void</span>) {
+    printf(<span class="c-st">"hello, world\n"</span>);
+    <span class="c-kw">return</span> <span class="c-nu">0</span>;
+}</pre>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 03 — THE WORK ══ -->
+<section class="chapter work" id="work">
+  <div class="wrap">
+    <div class="ch-head rv">
+      <span class="ch-num">03</span>
+      <h2 class="display ch-title">THE WORK</h2>
+    </div>
+
+    <a class="entry rv" href="https://github.com/G93-32/EAST" target="_blank" rel="noopener">
+      <span class="entry-n display">01</span>
+      <span class="entry-body">
+        <span class="entry-title display">EAST — EAST AFRICA TRAVEL</span>
+        <span class="entry-desc">A full travel-guide and booking site: destination pages, a booking flow, sign-up, and mobile navigation. Built for search visibility and accessibility from the first commit — semantic markup, clean CSS, hand-written JavaScript.</span>
+        <span class="tags"><i>HTML</i><i>CSS</i><i>JAVASCRIPT</i><i>SEO</i></span>
+      </span>
+      <span class="entry-arrow">↗</span>
+    </a>
+
+    <a class="entry rv" href="https://github.com/G93-32/Linear-Regression" target="_blank" rel="noopener">
+      <span class="entry-n display">02</span>
+      <span class="entry-body">
+        <span class="entry-title display">ML FROM SCRATCH</span>
+        <span class="entry-desc">Core machine-learning algorithms implemented by hand — linear regression (including a pure-NumPy version with no library solver), logistic regression, decision trees and k-means clustering. Written to understand the maths the libraries hide.</span>
+        <span class="tags"><i>PYTHON</i><i>JUPYTER</i><i>NUMPY</i><i>PANDAS</i></span>
+      </span>
+      <span class="entry-arrow">↗</span>
+    </a>
+
+    <a class="entry rv" href="https://github.com/G93-32/G-Portfolio" target="_blank" rel="noopener">
+      <span class="entry-n display">03</span>
+      <span class="entry-body">
+        <span class="entry-title display">THIS PORTFOLIO</span>
+        <span class="entry-desc">The site you're reading. Editorial layout, scroll-pinned type, marquees and reveal animations — all of it hand-rolled in three files with zero dependencies and zero build step.</span>
+        <span class="tags"><i>HTML</i><i>CSS</i><i>JAVASCRIPT</i><i>NO BUILD</i></span>
+      </span>
+      <span class="entry-arrow">↗</span>
+    </a>
+  </div>
+</section>
+
+<!-- ══ PINNED QUOTE 2 ══ -->
+<div class="pin-wrap pin-dark">
+  <div class="pin">
+    <blockquote class="display pin-quote">
+      <span class="line"><span>IT'S MORE ABOUT</span></span>
+      <span class="line"><span>CURIOSITY THAN</span></span>
+      <span class="line"><span>TALENT</span></span>
+    </blockquote>
+  </div>
+</div>
+
+<!-- ══ 04 — TIMELINE ══ -->
+<section class="chapter" id="timeline">
+  <div class="wrap">
+    <div class="ch-head rv">
+      <span class="ch-num">04</span>
+      <h2 class="display ch-title">TIMELINE</h2>
+    </div>
+    <p class="rail-hint rv">DRAG OR SCROLL SIDEWAYS →</p>
+  </div>
+
+  <div class="rail" id="rail">
+    <article class="rail-card">
+      <span class="rail-date">FIRST LINES</span>
+      <h3 class="display rail-title">C &amp; PYTHON</h3>
+      <p>Compilers, syntax errors, and the habit of reading documentation properly.</p>
+    </article>
+    <article class="rail-card">
+      <span class="rail-date">THE WEB</span>
+      <h3 class="display rail-title">HTML &amp; CSS</h3>
+      <p>Semantic structure, the box model, and responsive layout without a framework in sight.</p>
+    </article>
+    <article class="rail-card">
+      <span class="rail-date">INTERACTION</span>
+      <h3 class="display rail-title">JAVASCRIPT</h3>
+      <p>The DOM, events, fetch, and the browser APIs that make a page feel alive.</p>
+    </article>
+    <article class="rail-card">
+      <span class="rail-date">SHIPPED</span>
+      <h3 class="display rail-title">EAST</h3>
+      <p>A complete multi-page travel site — SEO, accessibility, booking flow, mobile nav.</p>
+    </article>
+    <article class="rail-card">
+      <span class="rail-date">MATHEMATICS</span>
+      <h3 class="display rail-title">MACHINE LEARNING</h3>
+      <p>Regression, decision trees and clustering — implemented from the equations up.</p>
+    </article>
+    <article class="rail-card rail-card-accent">
+      <span class="rail-date">NOW</span>
+      <h3 class="display rail-title">WHAT'S NEXT</h3>
+      <p>Deeper front-end engineering, and models that do something useful in the browser.</p>
+    </article>
+  </div>
+</section>
+
+<!-- ══ 05 — THE CRAFT ══ -->
+<section class="chapter" id="craft">
+  <div class="wrap">
+    <div class="ch-head rv">
+      <span class="ch-num">05</span>
+      <h2 class="display ch-title">THE CRAFT</h2>
+    </div>
+    <div class="craft-grid">
+      <div class="craft rv">
+        <span class="craft-n">I</span>
+        <h3 class="display craft-t">LEARNING</h3>
+        <p>Read the specification, then build the smallest version that proves it. Notebooks, scratch files, and a lot of deliberately broken code.</p>
+      </div>
+      <div class="craft rv">
+        <span class="craft-n">II</span>
+        <h3 class="display craft-t">BUILDING</h3>
+        <p>Semantic HTML first, CSS that a stranger could read, JavaScript only where it earns its place. Accessibility is part of the build, not a pass at the end.</p>
+      </div>
+      <div class="craft rv">
+        <span class="craft-n">III</span>
+        <h3 class="display craft-t">SHIPPING</h3>
+        <p>Git history that tells a story. Tested on real devices, at real widths, with the network throttled and the motion preferences respected.</p>
+      </div>
+      <div class="craft rv">
+        <span class="craft-n">IV</span>
+        <h3 class="display craft-t">OFF-HOURS</h3>
+        <p>Sim racing, taking hardware apart, and reading about the parts of computing that don't fit on a CV.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ 06 — CONTACT ══ -->
+<section class="contact" id="contact">
+  <div class="wrap">
+    <p class="label rv">06 — CONTACT</p>
+    <h2 class="display contact-title">
+      <span class="line"><span>LET'S BUILD</span></span>
+      <span class="line"><span>SOMETHING</span></span>
+    </h2>
+    <p class="contact-sub rv">Open to opportunities, collaborations, or a conversation about code.</p>
+    <a class="cta rv" href="mailto:gurjotsembi@gmail.com">
+      <span>GURJOTSEMBI@GMAIL.COM</span>
+      <i>→</i>
+    </a>
+  </div>
+</section>
+
+</main>
+
+<!-- ══ FOOTER ══ -->
+<footer class="footer">
+  <div class="marquee foot-marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span>GET IN TOUCH — GET IN TOUCH — GET IN TOUCH —&nbsp;</span>
+      <span>GET IN TOUCH — GET IN TOUCH — GET IN TOUCH —&nbsp;</span>
+    </div>
+  </div>
+  <div class="wrap foot-inner">
+    <div class="foot-links">
+      <a href="https://github.com/G93-32" target="_blank" rel="noopener"><span class="roll"><span class="roll-in"><span>GITHUB</span><span>GITHUB</span></span></span></a>
+      <a href="mailto:gurjotsembi@gmail.com"><span class="roll"><span class="roll-in"><span>EMAIL</span><span>EMAIL</span></span></span></a>
+    </div>
+    <p class="foot-meta">DESIGNED &amp; BUILT BY GURJOT SINGH — © <span id="year"></span></p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
 </body>
 </html>
