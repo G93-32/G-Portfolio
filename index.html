@@ -5,8 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Gurjot Singh | Developer</title>
 <meta name="description" content="Gurjot Singh — developer. Front-end engineering and machine learning, built from scratch." />
-<!-- Reveal animations only apply when JS is running, so the page is never blank without it. -->
-<script>document.documentElement.classList.add('js');</script>
+<!-- Reveal animations only apply when JS is running, so the page is never blank
+     without it. The timeout is a failsafe: if script.js fails to load or throws,
+     it never sets __ready, and we drop back to showing everything unanimated. -->
+<script>
+  document.documentElement.classList.add('js');
+  setTimeout(function () {
+    if (!window.__ready) document.documentElement.classList.remove('js');
+  }, 3000);
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />

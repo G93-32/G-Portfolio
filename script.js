@@ -1,3 +1,6 @@
+// Tells the failsafe in index.html that JS is alive and the reveals will run.
+window.__ready = true;
+
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* ── Chapters menu ─────────────────────────────────────────── */
@@ -23,6 +26,7 @@ let pending = [...document.querySelectorAll('.rv, .line')];
 
 function checkReveals() {
   const vh = window.innerHeight;
+  if (!vh) return; // viewport not measurable yet — try again on a later pass
   for (let i = pending.length - 1; i >= 0; i--) {
     const box = pending[i].getBoundingClientRect();
     if (box.top < vh * 0.9 && box.bottom > 0) {
@@ -111,6 +115,9 @@ window.addEventListener('resize', onScroll, { passive: true });
 window.addEventListener('load', update);
 // Web fonts change line heights, so re-measure once they land.
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(update);
+// Layout and viewport size can settle late. Re-check over the first few
+// seconds so nothing is left stuck invisible if an early pass measured 0.
+[100, 400, 1000, 2500].forEach(t => setTimeout(update, t));
 update();
 
 /* ── Timeline rail: drag to scroll ─────────────────────────── */
