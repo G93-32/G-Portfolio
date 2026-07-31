@@ -180,7 +180,10 @@ body.menu-open .menu-nav a:nth-child(6) { transition-delay: 0.46s; }
   min-height: 100svh;
   display: flex; flex-direction: column; justify-content: flex-end;
   position: relative;
-  padding-bottom: 2rem;
+  /* Top padding keeps the bottom-aligned content clear of the fixed
+     header once it grows tall enough to reach the top of the screen.
+     Kept tight so the scroll cue still lands above the fold at 720p. */
+  padding: clamp(5rem, 11vh, 8rem) 0 1.5rem;
   overflow: hidden;
 }
 /* Oversized ghost numeral, echoing the racing-number motif */
@@ -203,7 +206,7 @@ body.menu-open .menu-nav a:nth-child(6) { transition-delay: 0.46s; }
   position: relative; z-index: 1;
   padding: 0 var(--site-x);
   max-width: 1400px;
-  margin: 0 auto 3.5rem;
+  margin: 0 auto 2rem;
   width: 100%;
 }
 .eyebrow {
@@ -213,8 +216,10 @@ body.menu-open .menu-nav a:nth-child(6) { transition-delay: 0.46s; }
   color: var(--muted);
   margin-bottom: 1.6rem;
 }
+/* Sized against viewport height as well as width, so a short window
+   doesn't get a headline taller than the space available for it. */
 .hero-title {
-  font-size: clamp(3.5rem, 15vw, 14rem);
+  font-size: clamp(3.5rem, min(15vw, 28vh), 14rem);
 }
 .hero-sub {
   max-width: 40ch;
