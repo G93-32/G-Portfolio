@@ -151,5 +151,19 @@ rail.addEventListener('pointercancel', endDrag);
 // A drag that ends on a card shouldn't also count as a click.
 rail.addEventListener('click', e => { if (moved) e.preventDefault(); }, true);
 
+/* ── Hero monogram: drifts a little against the pointer ────── */
+const hero = document.querySelector('.hero');
+if (hero && !reduced && window.matchMedia('(pointer: fine)').matches) {
+  hero.addEventListener('pointermove', e => {
+    const b = hero.getBoundingClientRect();
+    hero.style.setProperty('--gx', ((e.clientX - b.left) / b.width - 0.5) * -40 + 'px');
+    hero.style.setProperty('--gy', ((e.clientY - b.top) / b.height - 0.5) * -26 + 'px');
+  });
+  hero.addEventListener('pointerleave', () => {
+    hero.style.setProperty('--gx', '0px');
+    hero.style.setProperty('--gy', '0px');
+  });
+}
+
 /* ── Footer year ───────────────────────────────────────────── */
 document.getElementById('year').textContent = new Date().getFullYear();

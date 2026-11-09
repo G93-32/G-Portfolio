@@ -35,6 +35,16 @@ body {
 
 ::selection { background: var(--accent); color: var(--white); }
 
+/* Fine paper grain over the whole page, so the flat greys read as stock
+   rather than screen. Black speckle only: it disappears on the dark sections. */
+body::after {
+  content: '';
+  position: fixed; inset: 0; z-index: 300;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
 .wrap { max-width: 1400px; margin: 0 auto; padding: 0 var(--site-x); }
 
 /* Display type — tight, condensed, uppercase. The signature of the layout. */
@@ -186,14 +196,16 @@ body.menu-open .menu-nav a:nth-child(6) { transition-delay: 0.46s; }
   padding: clamp(5rem, 11vh, 8rem) 0 1.5rem;
   overflow: hidden;
 }
-/* Oversized ghost numeral, echoing the racing-number motif */
+/* Oversized ghost monogram. --gx/--gy are set from script.js so it
+   drifts a little against the pointer. */
 .hero::before {
-  content: '93';
+  content: 'G.S';
   position: absolute;
-  top: 44%; right: -2vw;
-  transform: translateY(-50%);
+  top: 44%; right: 2.5vw;
+  transform: translate(var(--gx, 0px), calc(-50% + var(--gy, 0px)));
+  transition: transform 1.1s var(--ease);
   font-family: var(--display);
-  font-size: clamp(14rem, 34vw, 32rem);
+  font-size: clamp(9rem, 22vw, 21rem);
   line-height: 0.7;
   color: transparent;
   -webkit-text-stroke: 1.5px var(--line);
@@ -413,7 +425,7 @@ html.js .line.in > span { transform: translateY(0); }
 /* ═════════════════════════ WORK ENTRIES ══════════════════════ */
 .entry {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr auto auto;
   gap: clamp(1.2rem, 4vw, 3.5rem);
   align-items: start;
   padding: 2.5rem 0;
@@ -472,6 +484,29 @@ html.js .line.in > span { transform: translateY(0); }
   border-radius: 999px;
   transition: border-color 0.4s var(--ease), color 0.4s var(--ease);
 }
+/* Preview of the project: greyscale at rest, full colour on hover */
+.entry-shot {
+  display: block;
+  width: clamp(190px, 23vw, 330px);
+  aspect-ratio: 16 / 10;
+  margin-top: 0.3rem;
+  overflow: hidden;
+  background: var(--ink);
+  border: 1px solid var(--line);
+  transition: border-color 0.4s var(--ease);
+}
+.entry-shot img {
+  display: block;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.06);
+  transition: filter 0.6s var(--ease), transform 0.9s var(--ease);
+}
+.entry:hover .entry-shot { border-color: rgba(255,255,255,0.65); }
+.entry:hover .entry-shot img { filter: none; transform: scale(1.06); }
+/* No hover on touch screens, so show the colour straight away */
+@media (hover: none) { .entry-shot img { filter: none; } }
+
 .entry-arrow {
   font-size: 1.6rem;
   color: var(--muted);
@@ -671,6 +706,7 @@ html.js .rv.in { opacity: 1; transform: translateY(0); }
   .two-col { grid-template-columns: 1fr; }
   .pin-wrap { height: 200vh; }
   .entry { grid-template-columns: auto 1fr; }
+  .entry-shot { grid-column: 2; width: 100%; max-width: 440px; margin-top: 0.6rem; }
   .entry-arrow { grid-column: 2; margin-top: 0.5rem; }
   .hero::before { opacity: 0.55; right: -8vw; }
   .foot-inner { flex-direction: column; align-items: flex-start; }

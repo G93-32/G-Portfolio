@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="Scatter plot with a fitted regression line">
+  <rect width="800" height="500" fill="#000016"/>
+  <g stroke="#ffffff" stroke-opacity="0.09" stroke-width="1">
+    <path d="M90 60V420M230 60V420M370 60V420M510 60V420M650 60V420"/>
+    <path d="M90 420H730M90 330H730M90 240H730M90 150H730M90 60H730"/>
+  </g>
+  <path d="M90 60V420H730" fill="none" stroke="#9797a5" stroke-width="1.5"/>
+  <g stroke="#9797a5" stroke-opacity="0.55" stroke-width="1.2">
+    <path d="M128 372V380M176 392V361M222 318V345M268 356V327M312 286V311M356 322V294M402 262V277M446 228V260M492 274V243M536 206V226M580 236V209M624 170V192M668 198V175M704 142V159"/>
+  </g>
+  <g fill="#f1f1f1">
+    <circle cx="128" cy="372" r="6"/><circle cx="176" cy="392" r="6"/><circle cx="222" cy="318" r="6"/>
+    <circle cx="268" cy="356" r="6"/><circle cx="312" cy="286" r="6"/><circle cx="356" cy="322" r="6"/>
+    <circle cx="402" cy="262" r="6"/><circle cx="446" cy="228" r="6"/><circle cx="492" cy="274" r="6"/>
+    <circle cx="536" cy="206" r="6"/><circle cx="580" cy="236" r="6"/><circle cx="624" cy="170" r="6"/>
+    <circle cx="668" cy="198" r="6"/><circle cx="704" cy="142" r="6"/>
+  </g>
+  <path d="M100 392L724 151" stroke="#e4032e" stroke-width="4" stroke-linecap="round"/>
+  <g font-family="'JetBrains Mono', ui-monospace, monospace" font-size="17" letter-spacing="2">
+    <text x="112" y="98" fill="#e4032e">y = wx + b</text>
+    <text x="112" y="126" fill="#9797a5">MINIMISE Σ (y − ŷ)²</text>
+  </g>
+</svg>
